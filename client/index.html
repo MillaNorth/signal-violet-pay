@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Violet Pay 💜 - Zambia</title>
+<style>
+body{font-family:system-ui;background:#0f0a1a;color:white;margin:0;padding:20px}
+.card{background:#1e1333;border-radius:20px;padding:24px;max-width:480px;margin:20px auto;box-shadow:0 10px 30px rgba(124,58,237,0.3)}
+.btn{background:#7c3aed;color:white;border:0;padding:14px 20px;border-radius:12px;width:100%;font-weight:700;font-size:16px;margin-top:10px;cursor:pointer}
+input{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#0f0a1a;color:white;margin:8px 0;box-sizing:border-box}
+h1{color:#a78bfa} .live{color:#34d399;font-size:12px}
+a{color:#a78bfa}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Violet Pay 💜</h1>
+<span class="live">● LIVE API: signal-violet-pay.onrender.com</span>
+<p>Pay with MTN, Airtel, Flutterwave in Zambia</p>
+<input id="amount" placeholder="Amount ZMW" value="50">
+<input id="phone" placeholder="Phone 2609..." value="260">
+<select id="provider" style="width:100%;padding:14px;border-radius:12px;background:#0f0a1a;color:white;margin:8px 0"><option value="mtn">MTN MoMo</option><option value="airtel">Airtel Money</option><option value="flutterwave">Card / Flutterwave</option></select>
+<button class="btn" onclick="pay()">Pay Now 💜</button>
+<pre id="out" style="white-space:pre-wrap;background:#0f0a1a;padding:12px;border-radius:12px;margin-top:15px;max-height:300px;overflow:auto"></pre>
+<p style="font-size:12px;opacity:0.6">API: <a href="https://signal-violet-pay.onrender.com" target="_blank">signal-violet-pay.onrender.com</a></p>
+</div>
+<script>
+const API='https://signal-violet-pay.onrender.com';
+async function pay(){
+ const amount=document.getElementById('amount').value;
+ const phone=document.getElementById('phone').value;
+ const provider=document.getElementById('provider').value;
+ const out=document.getElementById('out');
+ out.textContent='Processing...';
+ let url=provider==='flutterwave'?`${API}/api/pay/flutterwave`:`${API}/api/pay/momo`;
+ let body=provider==='flutterwave'?{amount,email:'test@violet.zm',currency:'ZMW'}:{amount,phone,provider};
+ try{
+  let r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  let j=await r.json();
+  out.textContent=JSON.stringify(j,null,2);
+ }catch(e){out.textContent='Error: '+e}
+}
+fetch(API+'/api/health').then(r=>r.json()).then(j=>document.getElementById('out').textContent=JSON.stringify(j,null,2));
+</script>
+</body>
+</html>
